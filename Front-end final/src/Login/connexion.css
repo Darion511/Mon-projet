@@ -1,0 +1,90 @@
+/* Fond de la page avec un dégradé */
+/*body {
+    background-image: linear-gradient(#000000, rgb(211, 174, 106), rgba(255, 255, 255));
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+  
+.card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 350px;
+}
+  
+  /* Style pour le titre */
+/*h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+  
+  /* Champ du formulaire */
+/*.form-control {
+    border-radius: 25px;
+    padding: 10px;
+}
+
+.form-label{
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    display:flex
+
+}
+  
+  
+  /* Bouton de connexion */
+/*.btn {
+    background-color: rgb(211, 174, 106);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px ;
+    border-radius: 25px;
+    margin-top: 20px;
+    width: 100%;
+}
+  
+.btn:hover {
+    background-color:rgb(211, 174, 106);
+}
+  
+  /* Liens de style */
+/*.forgot-password {
+    font-size: 0.9rem;
+    color: rgb(211, 174, 106);
+    text-decoration: none;
+}
+  
+.forgot-password:hover {
+    text-decoration: underline;
+}
+  
+.text-center a {
+    color: rgb(211, 174, 106);
+    text-decoration: none;
+}
+  
+.text-center a:hover {
+    text-decoration: underline;
+}
+  
+/* Effet sur les champs de texte au survol */
+/*.form-control:focus {
+    border-color: rgb(211, 174, 106);
+    box-shadow: 0 0 5px rgba(211, 179, 137, 0.5);
+}
+  

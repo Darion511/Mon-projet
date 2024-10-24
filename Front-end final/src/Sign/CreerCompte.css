@@ -1,0 +1,77 @@
+/* Fond avec un dégradé */
+/*body {
+    background: linear-gradient(to bottom, #40392e, #f0e5d4);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 350px;
+  }
+  
+  /* Titre */
+  /*h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  
+  /* Champs du formulaire */
+  /*.form-control {
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+  }
+  
+  /* Bouton de connexion */
+  /*.btn {
+    background-color: #d3b389;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px 0;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+  
+  .btn:hover {
+    background-color: #b59e7e;
+  }
+  
+  /* Section "Sign up with Google" */
+  /*.google-signup .google-btn {
+    background-color: white;
+    border: 1px solid #ccc;
+    color: #333;
+    font-size: 1.1rem;
+    padding: 10px 0;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .google-signup .google-btn img {
+    width: 20px;
+    margin-right: 10px;
+  }
+  
+  /* Effet sur les champs de texte au survol */
+  /*.form-control:focus {
+    border-color: #d3b389;
+    box-shadow: 0 0 5px rgba(211, 179, 137, 0.5);
+  }*/
+  

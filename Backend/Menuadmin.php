@@ -1,87 +1,101 @@
 <?php
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
+session_start();
+require_once 'database.php'; 
+// Headers CORS pour permettre les requêtes entre domaines
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE"); // Ajoutez DELETE ici
+header('Content-Type: application/json');
 
-$host = 'localhost';
-$db = 'zeducspace'; // Remplacez par votre nom de base de données
-$user = 'root'; // Remplacez par votre utilisateur
-$pass = ''; // Remplacez par votre mot de passe
+// Vérifier la méthode de la requête
+$method = $_SERVER['REQUEST_METHOD'];
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Erreur de connexion : ' . $e->getMessage()]);
-    exit;
-}
-
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-
-switch ($requestMethod) {
+switch ($method) {
     case 'GET':
-        $stmt = $pdo->query("SELECT * FROM menuProduit");
-        $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'menuProduit' => $produits]);
+        fetchProduits($conn);
         break;
-
     case 'POST':
-        $title = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $imgSrc = $_FILES['imgSrc']['name'] ?? '';
-
-        if ($imgSrc) {
-            move_uploaded_file($_FILES['imgSrc']['tmp_name'], "uploads/" . $imgSrc);
-        }
-
-        $stmt = $pdo->prepare("INSERT INTO menuProduit (title, description, imgSrc) VALUES (?, ?, ?)");
-        if ($stmt->execute([$title, $description, $imgSrc])) {
-            echo json_encode(['success' => true, 'produit' => ['id' => $pdo->lastInsertId(), 'title' => $title, 'description' => $description, 'imgSrc' => $imgSrc]]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout du produit.']);
-        }
+        addProduit($conn);
         break;
-
     case 'PUT':
-        parse_str(file_get_contents("php://input"), $putVars);
-        $id = $_GET['id'] ?? null;
-        $title = $putVars['title'] ?? '';
-        $description = $putVars['description'] ?? '';
-
-        if ($id) {
-            $stmt = $pdo->prepare("UPDATE menuProduit SET title = ?, description = ? WHERE id = ?");
-            if ($stmt->execute([$title, $description, $id])) {
-                echo json_encode(['success' => true]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification du produit.']);
-            }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'ID manquant.']);
-        }
+        updateProduit($conn);
         break;
-
     case 'DELETE':
-        $id = $_GET['id'] ?? null;
-        if ($id) {
-            $stmt = $pdo->prepare("DELETE FROM menuProduit WHERE id = ?");
-            if ($stmt->execute([$id])) {
-                echo json_encode(['success' => true]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression du produit.']);
-            }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'ID manquant.']);
-        }
+        deleteProduit($conn);
         break;
-
     default:
-        echo json_encode(['success' => false, 'message' => 'Méthode non autorisée.']);
+        http_response_code(405);
+        echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
         break;
 }
+
+// Fonction pour récupérer tous les produits
+function fetchProduits($conn) {
+    $sql = "SELECT * FROM produits";
+    $result = $conn->query($sql);
+
+    $produits = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $produits[] = $row;
+        }
+    }
+
+    echo json_encode(['success' => true, 'produits' => $produits]);
+}
+
+// Fonction pour ajouter un produit
+function addProduit($conn) {
+    if (isset($_POST['title'], $_POST['description'], $_FILES['imgSrc'])) {
+        $title = $conn->real_escape_string($_POST['title']);
+        $description = $conn->real_escape_string($_POST['description']);
+        $imgSrc = $_FILES['imgSrc']['name'];
+
+        // Déplacer l'image vers le dossier approprié
+        move_uploaded_file($_FILES['imgSrc']['tmp_name'], "uploads/" . $imgSrc);
+
+        $sql = "INSERT INTO produits (title, description, imgSrc) VALUES ('$title', '$description', '$imgSrc')";
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(['success' => true, 'produit' => ['id' => $conn->insert_id, 'title' => $title, 'description' => $description, 'imgSrc' => $imgSrc]]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout du produit: ' . $conn->error]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Données manquantes']);
+    }
+}
+
+// Fonction pour mettre à jour un produit
+function updateProduit($conn) {
+    parse_str(file_get_contents("php://input"), $put_vars);
+    $id = intval($_GET['id']);
+    
+    if (isset($put_vars['title'], $put_vars['description'])) {
+        $title = $conn->real_escape_string($put_vars['title']);
+        $description = $conn->real_escape_string($put_vars['description']);
+
+        $sql = "UPDATE produits SET title='$title', description='$description' WHERE id=$id";
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour du produit: ' . $conn->error]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Données manquantes']);
+    }
+}
+
+// Fonction pour supprimer un produit
+function deleteProduit($conn) {
+    $id = intval($_GET['id']);
+    $sql = "DELETE FROM produits WHERE id=$id";
+    
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression du produit: ' . $conn->error]);
+    }
+}
+
+$conn->close(); // Fermer la connexion à la base de données
 ?>
