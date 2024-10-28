@@ -31,20 +31,17 @@ Espace Gérant
 **Nasser**
 **Alain**
 **switch**
+
 ## Comment importer sur votre machine
  1. Installer git sur votre machine
  2. une fois l'installation et la configuration ok . Utilisez la commande :
  ```bash
- git clone https://github.com/DarylNoupik/cpp-pendu-lab.git
+git clone https://github.com/Darion511/Mon-projet.git
 ```
-## Comment exécuter
-
-1. Assurez-vous d'avoir un environnement C++ configuré sur votre système.
-2. Compilez le code source en utilisant un compilateur C++ (par exemple, g++).
-3. Exécutez le programme généré.
-
-```bash
-g++ pendu.cpp -o pendu
-./pendu
+## Technologies Utilisées
+Frontend : React.js.
+Backend : PHP.
+Base de données : MySQL pour la gestion des utilisateurs, commandes, et programmes de fidélité.
+CI/CD : GitHub Actions pour automatiser les déploiements.
 ``` 
  
